@@ -1,26 +1,37 @@
 <script lang="ts">
-    import Dialog from './components/Dialog.svelte'
+    import RepeatButton from './components/RepeatButton.svelte';
+    import RetryButton from './components/RetryButton.svelte';
+    import {AiNovel} from './utilities/ai-novel';
+    import { css } from '@emotion/css';
+    import invariant from 'tiny-invariant';
 
-    let visable: boolean = false;
-    let name: string;
-
-    let element = document.getElementById("retryoptions");
-    let userLogin = document.querySelector('meta[name="user-login"]')?.getAttribute('content');
-    if(userLogin) name = userLogin;
+    const body = css`
+        .body {
+            text-align: center;
+        }
+    `;
+    const aiNovel = new AiNovel();
     
-    setTimeout(() => visable = true, 1000);
+    function handleRepeat(event: CustomEvent<{
+        repeatCount: number,
+    }>) {
+        const detail = event.detail;
+        alert(`repeat count: ${detail.repeatCount} ${typeof detail.repeatCount}`)
+        aiNovel.doRepeat(detail.repeatCount);
+    }
+    
+    function handleRetry(event: CustomEvent<{
+        retryCount: number,
+    }>) {
+        const detail = event.detail;
+        alert(`retry count: ${detail.retryCount} ${typeof detail.retryCount}`)
+        aiNovel.doRetry(detail.retryCount);
+    }
 
 </script>
 
-<Dialog bind:visable>
-    <div class="body">
-        <strong>Hello, {name}!</strong><br>
-        Do good things ❤️
-    </div>
-</Dialog>
-
-<style>
-    .body {
-        text-align: center;
-    }
-</style>
+<div>
+    ほげほげ
+    <RepeatButton on:notify={handleRepeat} />
+    <RetryButton on:notify={handleRetry} />
+</div>

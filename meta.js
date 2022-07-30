@@ -19,9 +19,9 @@ let meta = {
   homepage: pkg.homepage,
   author: pkg.author,
   namespace: "https://github.com",
-  resource: {
-    css: pathToFileURL(path.join(baseUrl, "bundle.css")),
-  },
+  // resource: {
+  //   css: pathToFileURL(path.join(baseUrl, "bundle.css")),
+  // },
   match: match,
   //   grant: ["GM_addStyle", "GM_getResourceText", "GM_xmlhttpRequest"],
   //   connect: ["github.com"],

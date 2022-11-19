@@ -52,9 +52,10 @@ export class AiNovel {
     const continuationButton = this.getcontinuation;
     if (continuationButton) {
       this.clickCount++;
+      this.changeHandler && this.changeHandler();
+
       if (this.maxCount > this.clickCount) {
         if (this.mode === "getcontinuation") {
-          alert("続きボタンを押す");
           this.handler = setTimeout(() => {
             continuationButton.click();
             this.startWait();
@@ -81,6 +82,7 @@ export class AiNovel {
     } else {
       setTimeout(() => this.buttonChecker(), 100);
     }
+    this.changeHandler && this.changeHandler();
   }
 
   // resetFetch() {
@@ -98,21 +100,36 @@ export class AiNovel {
     return document.getElementById("retry") as HTMLInputElement;
   }
 
+  /**
+   * リピートの開始
+   * @param repeatCount リピート回数
+   */
   doRepeat(repeatCount: number) {
     console.log("doRepeat", repeatCount);
     this.clickCount = 0;
     this.maxCount = repeatCount;
     this.mode = "getcontinuation";
+    this.changeHandler && this.changeHandler();
     this.getcontinuation.click();
     this.startWait();
   }
 
-  doRetry(retryCount: number) {
+  /**
+   * リトライの開始
+   * @params retryCount リトライ回数
+   * @params additional 追加
+   */
+  doRetry(retryCount: number, additional: boolean) {
     console.log("doRetry", retryCount);
     this.clickCount = 0;
     this.maxCount = retryCount;
     this.mode = "retry";
-    this.getcontinuation.click();
+    this.changeHandler && this.changeHandler();
+    if (!additional) {
+      this.getcontinuation.click();
+    } else {
+      this.retry.click();
+    }
     this.startWait();
   }
 
@@ -120,6 +137,7 @@ export class AiNovel {
     if (this.handler !== null) {
       clearTimeout(this.handler);
       this.handler = null;
+      this.changeHandler && this.changeHandler();
     }
     const wait = () => {
       if (document.getElementById("loading_anim").style.display == "none") {
@@ -132,11 +150,21 @@ export class AiNovel {
     wait();
   }
 
+  /**
+   * 中断
+   */
   abort() {
     this.mode = null;
     if (this.handler !== null) {
       clearTimeout(this.handler);
       this.handler = null;
     }
+    this.changeHandler && this.changeHandler();
+  }
+
+  changeHandler: () => void = () => {};
+
+  setChangeHandler(fn: () => void) {
+    this.changeHandler = fn;
   }
 }

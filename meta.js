@@ -2,11 +2,13 @@ const path = require("path");
 const { pathToFileURL } = require("url");
 const pkg = require("./package.json");
 
-const distURLBase = `https://example.com/dist`;
+const distURLBase = `https://github.com/ikomiki/ai-novel-extender/dist`;
 const packageName = pkg.name;
 
 const production = !process.env.ROLLUP_WATCH;
 const baseUrl = !production ? path.join(__dirname, "dist") : distURLBase;
+console.log("production", production);
+console.log("baseUrl", baseUrl);
 
 const match = !production
   ? ["https://ai-novel.com/novel.php", "http://127.0.0.1:8080/*"]
@@ -34,8 +36,8 @@ if (!production) {
 }
 
 if (production) {
-  meta.downloadURL = pathToFileURL(path.join(baseUrl, "bundle.js"));
-  meta.updateURL = pathToFileURL(path.join(baseUrl, "bundle.js"));
+  meta.downloadURL = path.join(path.join(baseUrl, "bundle.js"));
+  meta.updateURL = path.join(path.join(baseUrl, "bundle.js"));
 }
 
 module.exports = meta;
